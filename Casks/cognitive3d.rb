@@ -3,7 +3,7 @@ cask "cognitive3d" do
   name "cognitive3d"
   desc "CLI tool for the Cognitive3D spatial analytics API"
   homepage "https://cognitive3d.com"
-  version "0.3.0"
+  version "0.3.1"
 
   livecheck do
     skip "Auto-generated on release."
@@ -13,23 +13,23 @@ cask "cognitive3d" do
 
   on_macos do
     on_intel do
-      url "https://github.com/cognitivevr/c3d-cli-tool/releases/download/v#{version}/cognitive3d_#{version}_Darwin_x86_64.tar.gz"
-      sha256 "a42b2b1064426ea5140a09d6bd866694bf03bdf4dac13f3b31eab6e2aba64753"
+      url "https://github.com/CognitiveVR/cognitive3d-releases/releases/download/v#{version}/cognitive3d_#{version}_Darwin_x86_64.tar.gz"
+      sha256 "1412fd3da83b9dece2d6e4ab0efcb2d04dfc1d11be31fb5aa49cbdec4c1b875d"
     end
     on_arm do
-      url "https://github.com/cognitivevr/c3d-cli-tool/releases/download/v#{version}/cognitive3d_#{version}_Darwin_arm64.tar.gz"
-      sha256 "ed109e9499f9469870e86c79aca47238a395e587ef386e014328917f28fb3386"
+      url "https://github.com/CognitiveVR/cognitive3d-releases/releases/download/v#{version}/cognitive3d_#{version}_Darwin_arm64.tar.gz"
+      sha256 "28f676a81d03d70f18d388a1df3cdd1f45976a344aeea4c2d95af37042dfc8ba"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/cognitivevr/c3d-cli-tool/releases/download/v#{version}/cognitive3d_#{version}_Linux_x86_64.tar.gz"
-      sha256 "ccf751dd894a86c18d2aab9dbbbfcbe8cdaf23a49314ab759593e8be881e59e8"
+      url "https://github.com/CognitiveVR/cognitive3d-releases/releases/download/v#{version}/cognitive3d_#{version}_Linux_x86_64.tar.gz"
+      sha256 "4221b5ef1fdfc77f62010a5429eaea7a380d0c4db3c5412f5c1d8f0e4f1c112f"
     end
     on_arm do
-      url "https://github.com/cognitivevr/c3d-cli-tool/releases/download/v#{version}/cognitive3d_#{version}_Linux_arm64.tar.gz"
-      sha256 "6895cb33c9d1910ef1554df83053c62ed5b1643a8cbc428fb45a98ff8582d176"
+      url "https://github.com/CognitiveVR/cognitive3d-releases/releases/download/v#{version}/cognitive3d_#{version}_Linux_arm64.tar.gz"
+      sha256 "fe9ede877a2810aa14bab646a71eb9ca04df29d9eed7e0a0f2602e51e0c17f02"
     end
   end
 
