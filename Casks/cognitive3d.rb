@@ -3,7 +3,7 @@ cask "cognitive3d" do
   name "cognitive3d"
   desc "CLI tool for the Cognitive3D spatial analytics API"
   homepage "https://cognitive3d.com"
-  version "0.6.0"
+  version "0.6.1"
 
   livecheck do
     skip "Auto-generated on release."
@@ -14,22 +14,22 @@ cask "cognitive3d" do
   on_macos do
     on_intel do
       url "https://github.com/CognitiveVR/cognitive3d-releases/releases/download/v#{version}/cognitive3d_#{version}_Darwin_x86_64.tar.gz"
-      sha256 "5660c1604cd9831d30698b3acc148d92b8a16d367e651ef7765312552e3fadc0"
+      sha256 "7b314da6964b85bd15daefcadad79730ee952e0fb8ce67d6c1c8f2deebf8d311"
     end
     on_arm do
       url "https://github.com/CognitiveVR/cognitive3d-releases/releases/download/v#{version}/cognitive3d_#{version}_Darwin_arm64.tar.gz"
-      sha256 "12a5bdb31183c191dbafe5c91ab433d59fad3da59b3bde2683aab13698bee7b4"
+      sha256 "d4d4221f18dff06e12d1037bc422a46195bf8aa57bae44303d89031d8af4e077"
     end
   end
 
   on_linux do
     on_intel do
       url "https://github.com/CognitiveVR/cognitive3d-releases/releases/download/v#{version}/cognitive3d_#{version}_Linux_x86_64.tar.gz"
-      sha256 "a3efc5586213088f53624c049d6021e3270c20203466e34f48283e6a15a2888b"
+      sha256 "2b68463b0389c29d71ddcebd83deee981515a176d2ea65100486423554e20302"
     end
     on_arm do
       url "https://github.com/CognitiveVR/cognitive3d-releases/releases/download/v#{version}/cognitive3d_#{version}_Linux_arm64.tar.gz"
-      sha256 "f9af202a196cf8bcd62ff9efd8fa0d7f51b59cc811c3a4615fc9d4a260a94858"
+      sha256 "80ee415caaf93239aa18b5ff87b65ffe9ebb2097d45903774afcb531177f1967"
     end
   end
 
