@@ -1,12 +1,12 @@
 class CognitiveVRUpload < Formula
   desc "Upload scenes and dynamic objects to the Cognitive3D XR analytics platform"
   homepage "https://cognitive3d.com"
-  version "1.2.2"
+  version "1.3.0"
 
   on_linux do
     on_intel do
       url "https://github.com/CognitiveVR/cognitive3d-releases/releases/download/v#{version}/Cognitive3D.Upload.Tool_#{version}_amd64.AppImage"
-      sha256 "dccc30d26b9626f70eca255d65e702d47d550deec723b1ba50fe0ff88d220c1b"
+      sha256 "1b22601fcb4a62f24b6d3affe00ee62634320b3034370df75a64802804d1ac5a"
     end
   end
 
