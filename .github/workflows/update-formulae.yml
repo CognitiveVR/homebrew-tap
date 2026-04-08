@@ -1,0 +1,128 @@
+name: Update Formulae
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (e.g. v1.2.1)'
+        required: true
+        type: string
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute checksums
+        id: checksums
+        env:
+          INPUT_VERSION: ${{ github.event.inputs.version }}
+        run: |
+          VERSION="${INPUT_VERSION}"
+          VERSION_BARE="${VERSION#v}"
+          BASE="https://github.com/CognitiveVR/cognitive3d-releases/releases/download/${VERSION}"
+
+          # Artifact filenames confirmed from CI build v1.2.1
+          # Dots in product name (not spaces) — no URL encoding required
+          ARM64_FILE="Cognitive3D.Upload.Tool_${VERSION_BARE}_aarch64.dmg"
+          X64_FILE="Cognitive3D.Upload.Tool_${VERSION_BARE}_x64.dmg"
+          LINUX_FILE="Cognitive3D.Upload.Tool_${VERSION_BARE}_amd64.AppImage"
+
+          SHA_ARM=$(curl -sL "${BASE}/${ARM64_FILE}" | shasum -a 256 | awk '{print $1}')
+          SHA_X64=$(curl -sL "${BASE}/${X64_FILE}" | shasum -a 256 | awk '{print $1}')
+          SHA_LINUX=$(curl -sL "${BASE}/${LINUX_FILE}" | shasum -a 256 | awk '{print $1}')
+
+          echo "sha_arm=${SHA_ARM}" >> "$GITHUB_OUTPUT"
+          echo "sha_x64=${SHA_X64}" >> "$GITHUB_OUTPUT"
+          echo "sha_linux=${SHA_LINUX}" >> "$GITHUB_OUTPUT"
+          echo "version_bare=${VERSION_BARE}" >> "$GITHUB_OUTPUT"
+
+      - name: Update macOS cask version and SHA256
+        env:
+          VERSION_BARE: ${{ steps.checksums.outputs.version_bare }}
+          SHA_ARM: ${{ steps.checksums.outputs.sha_arm }}
+          SHA_X64: ${{ steps.checksums.outputs.sha_x64 }}
+        run: |
+          python3 - <<'PYEOF'
+          import re
+          import os
+
+          version_bare = os.environ["VERSION_BARE"]
+          sha_arm = os.environ["SHA_ARM"]
+          sha_x64 = os.environ["SHA_X64"]
+
+          with open("Casks/cognitive3d-upload.rb", "r") as f:
+              content = f.read()
+
+          # Update version
+          content = re.sub(r'version ".*?"', f'version "{version_bare}"', content)
+
+          # Update SHA256 per arch block
+          # on_arm block comes first, on_intel block comes second
+          lines = content.split("\n")
+          arm_seen = False
+          intel_seen = False
+          new_lines = []
+          sha256_pattern = re.compile(r'(\s+sha256 ")(?:PLACEHOLDER_[A-Z0-9_]+|[0-9a-f]{64})(")')
+          for line in lines:
+              if "on_arm" in line:
+                  arm_seen = True
+                  intel_seen = False
+              if "on_intel" in line:
+                  arm_seen = False
+                  intel_seen = True
+              m = sha256_pattern.match(line)
+              if m:
+                  if arm_seen:
+                      line = m.group(1) + sha_arm + m.group(2)
+                  elif intel_seen:
+                      line = m.group(1) + sha_x64 + m.group(2)
+              new_lines.append(line)
+
+          with open("Casks/cognitive3d-upload.rb", "w") as f:
+              f.write("\n".join(new_lines))
+
+          print("Cask updated.")
+          PYEOF
+
+      - name: Update Linux formula version and SHA256
+        env:
+          VERSION_BARE: ${{ steps.checksums.outputs.version_bare }}
+          SHA_LINUX: ${{ steps.checksums.outputs.sha_linux }}
+        run: |
+          python3 - <<'PYEOF'
+          import re
+          import os
+
+          version_bare = os.environ["VERSION_BARE"]
+          sha_linux = os.environ["SHA_LINUX"]
+
+          with open("Formula/cognitive3d-upload.rb", "r") as f:
+              content = f.read()
+
+          content = re.sub(r'version ".*?"', f'version "{version_bare}"', content)
+          content = re.sub(
+              r'(sha256 ")(?:PLACEHOLDER_LINUX_SHA256|[0-9a-f]{64})(")',
+              f'\\g<1>{sha_linux}\\g<2>',
+              content,
+          )
+
+          with open("Formula/cognitive3d-upload.rb", "w") as f:
+              f.write(content)
+
+          print("Formula updated.")
+          PYEOF
+
+      - name: Commit and push updated formulae
+        env:
+          INPUT_VERSION: ${{ github.event.inputs.version }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add Casks/cognitive3d-upload.rb Formula/cognitive3d-upload.rb
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git commit -m "Update cognitive3d-upload to ${INPUT_VERSION}"
+          git push
