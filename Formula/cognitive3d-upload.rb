@@ -6,7 +6,7 @@ class CognitiveVRUpload < Formula
   on_linux do
     on_intel do
       url "https://github.com/CognitiveVR/cognitive3d-releases/releases/download/v#{version}/Cognitive3D.Upload.Tool_#{version}_amd64.AppImage"
-      sha256 "PLACEHOLDER_LINUX_SHA256"
+      sha256 "41227834f49273360f86e5c723f702862073acc2a97a1d750463e62a91558f54"
     end
   end
 
