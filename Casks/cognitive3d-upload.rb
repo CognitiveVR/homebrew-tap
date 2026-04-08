@@ -11,7 +11,7 @@ cask "cognitive3d-upload" do
   on_macos do
     on_arm do
       url "https://github.com/CognitiveVR/cognitive3d-releases/releases/download/v#{version}/Cognitive3D.Upload.Tool_#{version}_aarch64.dmg"
-      sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+      sha256 "d4ab44eb91d73bf7bfcffe50dbeba9460d0e0d66f414ceeb3b913ea26e01c568"
     end
 
     on_intel do
