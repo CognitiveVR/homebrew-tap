@@ -34,9 +34,18 @@ jobs:
           X64_FILE="Cognitive3D.Upload.Tool_${VERSION_BARE}_x64.dmg"
           LINUX_FILE="Cognitive3D.Upload.Tool_${VERSION_BARE}_amd64.AppImage"
 
-          SHA_ARM=$(curl -sL "${BASE}/${ARM64_FILE}" | shasum -a 256 | awk '{print $1}')
-          SHA_X64=$(curl -sL "${BASE}/${X64_FILE}" | shasum -a 256 | awk '{print $1}')
-          SHA_LINUX=$(curl -sL "${BASE}/${LINUX_FILE}" | shasum -a 256 | awk '{print $1}')
+          # A draft or missing release answers 404; --fail stops the job instead of hashing the error page.
+          sha_of() {
+            if ! curl -sfL --retry 3 -o asset.bin "${BASE}/$1"; then
+              echo "::error::Could not download ${BASE}/$1. Publish the ${VERSION} release before updating the tap." >&2
+              exit 1
+            fi
+            shasum -a 256 asset.bin | awk '{print $1}'
+            rm -f asset.bin
+          }
+          SHA_ARM=$(sha_of "${ARM64_FILE}")
+          SHA_X64=$(sha_of "${X64_FILE}")
+          SHA_LINUX=$(sha_of "${LINUX_FILE}")
 
           echo "sha_arm=${SHA_ARM}" >> "$GITHUB_OUTPUT"
           echo "sha_x64=${SHA_X64}" >> "$GITHUB_OUTPUT"
